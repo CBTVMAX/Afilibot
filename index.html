@@ -390,6 +390,9 @@
     <button class="nav-item" onclick="showPage('canais')">
       <span class="icon">📡</span> Canais
     </button>
+    <button class="nav-item" onclick="showPage('gerador')">
+      <span class="icon">⚡</span> Gerador ML
+    </button>
   </nav>
   <div class="sidebar-footer">
     👤 Cameron Briel<br>
@@ -628,6 +631,58 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- GERADOR ML -->
+  <div id="page-gerador" class="page">
+    <div class="topbar">
+      <div>
+        <div class="page-title">⚡ Gerador de Links ML</div>
+        <div class="page-sub">Cole o link de qualquer produto e gere seu link de afiliado automaticamente.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-label">🏷️ Sua Etiqueta de Afiliado</div>
+      <div style="display:flex;gap:12px;margin-top:10px;align-items:center">
+        <input id="etiqueta-ml" type="text" value="camerondesign" style="max-width:260px" placeholder="sua-etiqueta">
+        <button class="btn btn-ghost" onclick="salvarEtiqueta()">Salvar</button>
+        <span id="etiqueta-ok" style="font-size:13px;color:var(--green);display:none">✅ Salvo!</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Esta etiqueta rastreia suas comissões no ML Afiliados.</div>
+    </div>
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-label" style="margin-bottom:14px">🔗 Gerar Link de Afiliado</div>
+      <div class="form-group">
+        <label>Link do Produto (Mercado Livre)</label>
+        <div style="display:flex;gap:10px">
+          <input id="ml-link-input" type="url" placeholder="Cole aqui o link do produto do ML...">
+          <button class="btn btn-cyan" onclick="gerarLink()" style="white-space:nowrap">Gerar Link</button>
+        </div>
+      </div>
+      <div id="link-resultado" style="display:none">
+        <div style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:10px;padding:16px;margin-top:8px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Seu link de afiliado gerado</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input id="link-gerado" type="text" readonly style="font-size:12px;font-family:monospace;color:var(--cyan);background:var(--bg)">
+            <button class="btn btn-ghost btn-sm" onclick="copiarLink()">📋 Copiar</button>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button class="btn btn-cyan btn-sm" onclick="adicionarProdutoML()">+ Adicionar ao AfiliBot</button>
+            <button class="btn btn-ghost btn-sm" onclick="limparGerador()">Limpar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-head">
+        <span class="table-title">Produtos Gerados</span>
+        <span id="gerados-count" style="font-size:13px;color:var(--muted)">0 produtos</span>
+      </div>
+      <div id="gerados-lista">
+        <div class="empty"><div class="empty-icon">⚡</div><h3>Nenhum link gerado ainda</h3><p>Cole um link do ML acima para começar.</p></div>
       </div>
     </div>
   </div>
@@ -1093,6 +1148,93 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     if (e.target === overlay) overlay.classList.remove('open');
   });
 });
+
+
+// ── GERADOR ML ──
+let etiquetaML = "camerondesign";
+let produtosGerados = [];
+
+function salvarEtiqueta() {
+  etiquetaML = document.getElementById("etiqueta-ml").value.trim() || "camerondesign";
+  const ok = document.getElementById("etiqueta-ok");
+  ok.style.display = "inline";
+  setTimeout(() => ok.style.display = "none", 2000);
+}
+
+function gerarLink() {
+  const input = document.getElementById("ml-link-input").value.trim();
+  if (!input) return toast("Cole um link do ML primeiro!", true);
+  if (!input.includes("mercadolivre") && !input.includes("meli.la") && !input.includes("mercadopago")) {
+    return toast("Cole um link válido do Mercado Livre!", true);
+  }
+  let linkFinal = input;
+  try {
+    const url = new URL(input);
+    url.searchParams.set("matt_tool", etiquetaML);
+    url.searchParams.set("matt_word", etiquetaML);
+    url.searchParams.set("matt_source", "afilibot");
+    linkFinal = url.toString();
+  } catch(e) {
+    linkFinal = input + (input.includes("?") ? "&" : "?") + "matt_tool=" + etiquetaML;
+  }
+  document.getElementById("link-gerado").value = linkFinal;
+  document.getElementById("link-resultado").style.display = "block";
+  toast("✅ Link gerado com sua etiqueta!");
+}
+
+function copiarLink() {
+  const link = document.getElementById("link-gerado").value;
+  navigator.clipboard.writeText(link).then(() => toast("📋 Link copiado!"));
+}
+
+function limparGerador() {
+  document.getElementById("ml-link-input").value = "";
+  document.getElementById("link-resultado").style.display = "none";
+}
+
+function adicionarProdutoML() {
+  const link = document.getElementById("link-gerado").value;
+  const linkOriginal = document.getElementById("ml-link-input").value;
+  if (!link) return;
+  const nome = "Produto ML " + (produtosGerados.length + 1);
+  const prod = { id: Date.now(), nome, link, linkOriginal, etiqueta: etiquetaML, cliques: 0, vendas: 0, geradoEm: new Date().toLocaleString("pt-BR") };
+  produtosGerados.push(prod);
+  state.produtos.push({ id: prod.id, nome, link, preco: "", comissao: "5", anuncio: "🔥 OFERTA! " + nome + " no Mercado Livre. Clique e garanta o seu 👇\n" + link, cliques: 0, vendas: 0 });
+  renderProdutos();
+  renderGerados();
+  limparGerador();
+  toast("✅ Produto adicionado ao AfiliBot!");
+}
+
+function renderGerados() {
+  const el = document.getElementById("gerados-lista");
+  document.getElementById("gerados-count").textContent = produtosGerados.length + " produto(s)";
+  if (!produtosGerados.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">⚡</div><h3>Nenhum link gerado ainda</h3><p>Cole um link do ML acima para começar.</p></div>`;
+    return;
+  }
+  el.innerHTML = `<table>
+    <thead><tr><th>Produto</th><th>Link Afiliado</th><th>Etiqueta</th><th>Gerado em</th><th>Ações</th></tr></thead>
+    <tbody>${produtosGerados.map(p => `
+      <tr>
+        <td><strong>${p.nome}</strong></td>
+        <td style="font-size:11px;font-family:monospace;color:var(--cyan)">${p.link.substring(0,45)}...</td>
+        <td><span class="badge badge-blue">${p.etiqueta}</span></td>
+        <td style="font-size:12px;color:var(--muted)">${p.geradoEm}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('${p.link}').then(()=>toast('Copiado!'))">📋</button>
+          <button class="btn btn-danger btn-sm" onclick="removerGerado(${p.id})">✕</button>
+        </td>
+      </tr>`).join("")}
+    </tbody></table>`;
+}
+
+function removerGerado(id) {
+  produtosGerados = produtosGerados.filter(p => p.id !== id);
+  state.produtos = state.produtos.filter(p => p.id !== id);
+  renderGerados();
+  renderProdutos();
+}
 
 // Init
 renderProdutos();
