@@ -393,6 +393,9 @@
     <button class="nav-item" onclick="showPage('gerador')">
       <span class="icon">⚡</span> Gerador ML
     </button>
+    <button class="nav-item" onclick="showPage('vendas')">
+      <span class="icon">🤝</span> Agente de Vendas
+    </button>
   </nav>
   <div class="sidebar-footer">
     👤 Cameron Briel<br>
@@ -687,6 +690,66 @@
     </div>
   </div>
 
+  <!-- AGENTE DE VENDAS -->
+  <div id="page-vendas" class="page">
+    <div class="topbar">
+      <div>
+        <div class="page-title">🤝 Agente de Vendas</div>
+        <div class="page-sub">Prospecte clientes, envie abordagens e feche contratos de criação de sites.</div>
+      </div>
+      <button class="btn btn-cyan" onclick="openModal('modal-lead')">+ Novo Cliente</button>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label"><div class="card-icon" style="background:rgba(37,99,235,.12)">🎯</div> Leads</div>
+        <div class="card-value" id="v-leads">0</div>
+        <div class="card-change">Em prospecção</div>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="card-icon" style="background:rgba(245,158,11,.12)">📨</div> Propostas Enviadas</div>
+        <div class="card-value" id="v-propostas">0</div>
+        <div class="card-change">Aguardando resposta</div>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="card-icon" style="background:rgba(16,185,129,.12)">✅</div> Contratos Fechados</div>
+        <div class="card-value" id="v-fechados">0</div>
+        <div class="card-change">Total</div>
+      </div>
+      <div class="card">
+        <div class="card-label"><div class="card-icon" style="background:rgba(34,211,238,.12)">💵</div> Receita em Contratos</div>
+        <div class="card-value" id="v-receita">R$ 0,00</div>
+        <div class="card-change">Fechados</div>
+      </div>
+    </div>
+
+    <div class="robot-status">
+      <div class="robot-emoji">🤝</div>
+      <div class="robot-info">
+        <h3>Agente de Vendas</h3>
+        <p id="vendas-status-text">Nenhum cliente em prospecção. Adicione seu primeiro lead!</p>
+      </div>
+      <div class="robot-actions">
+        <button class="btn btn-cyan" onclick="openModal('modal-lead')">Adicionar Cliente</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-head">
+        <span class="table-title">Pipeline de Clientes</span>
+        <span id="leads-count" style="font-size:13px;color:var(--muted)">0 cliente(s)</span>
+      </div>
+      <div id="leads-lista">
+        <div class="empty">
+          <div class="empty-icon">🤝</div>
+          <h3>Nenhum cliente cadastrado</h3>
+          <p>Adicione um lead para o agente ajudar a abordar e fechar contrato.</p>
+          <button class="btn btn-cyan" onclick="openModal('modal-lead')">Adicionar cliente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- ── MODAIS ── -->
@@ -809,6 +872,128 @@
   </div>
 </div>
 
+<!-- Modal Lead (Novo Cliente) -->
+<div id="modal-lead" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">
+      🤝 Novo Cliente
+      <button class="modal-close" onclick="closeModal('modal-lead')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Nome / Empresa</label>
+      <input id="l-nome" type="text" placeholder="Ex: Padaria do João">
+    </div>
+    <div class="form-group">
+      <label>Contato (WhatsApp, e-mail ou Instagram)</label>
+      <input id="l-contato" type="text" placeholder="Ex: (11) 91234-5678 ou @padariadojoao">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo de Site</label>
+        <select id="l-tipo">
+          <option value="institucional">Site Institucional</option>
+          <option value="loja">Loja Virtual (E-commerce)</option>
+          <option value="landing">Landing Page</option>
+          <option value="blog">Blog</option>
+          <option value="sistema">Sistema Web Sob Medida</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Orçamento Estimado</label>
+        <input id="l-orcamento" type="text" placeholder="R$ 1.500,00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="l-obs" placeholder="Ex: Encontrado no Instagram, quer o site pronto em 30 dias..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-lead')">Cancelar</button>
+      <button class="btn btn-cyan" onclick="salvarLead()">Salvar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Abordagem -->
+<div id="modal-abordagem" class="modal-overlay">
+  <div class="modal" style="width:600px">
+    <div class="modal-title">
+      💬 Gerar Mensagem de Abordagem
+      <button class="modal-close" onclick="closeModal('modal-abordagem')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Canal</label>
+      <select id="ab-canal" onchange="gerarAbordagem()">
+        <option value="whatsapp">WhatsApp</option>
+        <option value="email">E-mail</option>
+        <option value="instagram">Instagram / DM</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Mensagem (edite à vontade antes de enviar)</label>
+      <textarea id="ab-texto" style="min-height:220px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-abordagem')">Fechar</button>
+      <button class="btn btn-cyan" onclick="copiarAbordagem()">📋 Copiar Mensagem</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Contrato -->
+<div id="modal-contrato" class="modal-overlay">
+  <div class="modal" style="width:640px">
+    <div class="modal-title">
+      📄 Gerar Contrato de Prestação de Serviço
+      <button class="modal-close" onclick="closeModal('modal-contrato')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>CPF/CNPJ do Cliente (Contratante)</label>
+        <input id="ct-doc-cliente" type="text" placeholder="000.000.000-00">
+      </div>
+      <div class="form-group">
+        <label>Valor Total do Contrato</label>
+        <input id="ct-valor" type="text" placeholder="R$ 1.500,00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Forma de Pagamento</label>
+        <select id="ct-pagamento">
+          <option value="Pagamento único à vista, no ato da assinatura deste contrato.">100% à vista na assinatura</option>
+          <option value="50% (cinquenta por cento) de entrada na assinatura do contrato e 50% (cinquenta por cento) na entrega final do site.">50% entrada + 50% na entrega</option>
+          <option value="Pagamento parcelado em 3 (três) vezes iguais, sendo a primeira parcela na assinatura do contrato.">3x parceladas</option>
+          <option value="Pagamento mensal recorrente, referente à manutenção e hospedagem do site.">Mensalidade (manutenção/hospedagem)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Prazo de Entrega (dias)</label>
+        <input id="ct-prazo" type="number" value="15" min="1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Nome do Contratado (você / sua empresa)</label>
+      <input id="ct-contratado" type="text" placeholder="Seu nome ou razão social">
+    </div>
+    <div class="form-group">
+      <label>Escopo do Serviço</label>
+      <textarea id="ct-escopo" style="min-height:90px"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Prévia do Contrato</label>
+      <textarea id="ct-preview" readonly style="min-height:200px;font-family:monospace;font-size:12px;background:var(--bg)"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-contrato')">Fechar</button>
+      <button class="btn btn-ghost" onclick="gerarContrato()">🔄 Atualizar Prévia</button>
+      <button class="btn btn-ghost" onclick="copiarContrato()">📋 Copiar</button>
+      <button class="btn btn-ghost" onclick="baixarContrato()">⬇️ Baixar .txt</button>
+      <button class="btn btn-cyan" onclick="fecharContrato()">✅ Marcar Contrato Fechado</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast" class="toast"></div>
 
@@ -821,7 +1006,8 @@ let state = {
   historico: [],
   cliques: 0,
   vendas: 0,
-  receita: 0
+  receita: 0,
+  leads: []
 };
 
 // ── NAVIGATION ──
@@ -837,6 +1023,7 @@ function showPage(id) {
     }
   });
   if (id === 'cliques') renderCliques();
+  if (id === 'vendas') renderLeads();
 }
 
 // ── MODAL ──
@@ -1236,10 +1423,270 @@ function removerGerado(id) {
   renderProdutos();
 }
 
+// ── AGENTE DE VENDAS ──
+const tipoSiteLabel = {
+  institucional: 'Site Institucional',
+  loja: 'Loja Virtual (E-commerce)',
+  landing: 'Landing Page',
+  blog: 'Blog',
+  sistema: 'Sistema Web Sob Medida'
+};
+
+const escopoPadrao = {
+  institucional: 'Criação de site institucional responsivo com até 5 (cinco) páginas (Início, Sobre, Serviços, Portfólio e Contato), incluindo formulário de contato e otimização básica para mecanismos de busca (SEO).',
+  loja: 'Criação de loja virtual (e-commerce) responsiva com catálogo de produtos, carrinho de compras, integração com meio(s) de pagamento e painel administrativo para gestão dos pedidos.',
+  landing: 'Criação de landing page de alta conversão (página única), com formulário de captura de leads e integração com ferramentas de e-mail marketing e/ou WhatsApp.',
+  blog: 'Criação de blog responsivo com sistema de publicação de artigos, categorias, área de comentários e otimização básica para mecanismos de busca (SEO).',
+  sistema: 'Desenvolvimento de sistema web sob medida, conforme especificações e funcionalidades acordadas entre as partes.'
+};
+
+const leadStatusInfo = {
+  novo:        { label: 'Novo Lead',        badge: 'badge-blue'   },
+  contatado:   { label: 'Contatado',        badge: 'badge-yellow' },
+  proposta:    { label: 'Proposta Enviada', badge: 'badge-yellow' },
+  negociando:  { label: 'Negociando',       badge: 'badge-yellow' },
+  fechado:     { label: 'Contrato Fechado', badge: 'badge-green'  },
+  perdido:     { label: 'Perdido',          badge: 'badge-red'    }
+};
+
+let leadAtualId = null; // lead sendo usado nos modais de abordagem/contrato
+
+function parseValor(v) {
+  if (!v) return 0;
+  const n = parseFloat(String(v).replace(/[^\d,.-]/g, '').replace(/\.(?=\d{3},)/g, '').replace(',', '.'));
+  return isNaN(n) ? 0 : n;
+}
+
+function formatBRL(n) {
+  return 'R$ ' + n.toFixed(2).replace('.', ',');
+}
+
+// ── LEAD (CRUD) ──
+function salvarLead() {
+  const nome = document.getElementById('l-nome').value.trim();
+  const contato = document.getElementById('l-contato').value.trim();
+  const tipo = document.getElementById('l-tipo').value;
+  const orcamento = document.getElementById('l-orcamento').value.trim();
+  const obs = document.getElementById('l-obs').value.trim();
+
+  if (!nome || !contato) return toast('Preencha nome e contato!', true);
+
+  state.leads.push({ id: Date.now(), nome, contato, tipo, orcamento, obs, status: 'novo', valorFechado: 0 });
+  closeModal('modal-lead');
+  ['l-nome','l-contato','l-orcamento','l-obs'].forEach(id => document.getElementById(id).value = '');
+  renderLeads();
+  toast('✅ Cliente adicionado ao pipeline!');
+}
+
+function deleteLead(id) {
+  state.leads = state.leads.filter(l => l.id !== id);
+  renderLeads();
+  toast('Cliente removido.');
+}
+
+function mudarStatusLead(id, status) {
+  const lead = state.leads.find(l => l.id === id);
+  if (!lead) return;
+  lead.status = status;
+  renderLeads();
+  toast('Status atualizado: ' + leadStatusInfo[status].label);
+}
+
+function renderLeads() {
+  const el = document.getElementById('leads-lista');
+  document.getElementById('leads-count').textContent = state.leads.length + ' cliente(s)';
+
+  if (!state.leads.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🤝</div><h3>Nenhum cliente cadastrado</h3><p>Adicione um lead para o agente ajudar a abordar e fechar contrato.</p><button class="btn btn-cyan" onclick="openModal('modal-lead')">Adicionar cliente</button></div>`;
+    updateVendasDashboard();
+    return;
+  }
+
+  el.innerHTML = `<table>
+    <thead><tr><th>Cliente</th><th>Contato</th><th>Tipo de Site</th><th>Orçamento</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>${state.leads.map(l => `
+      <tr>
+        <td><strong>${l.nome}</strong></td>
+        <td style="font-size:12px">${l.contato}</td>
+        <td style="font-size:12px">${tipoSiteLabel[l.tipo] || l.tipo}</td>
+        <td>${l.orcamento || '—'}</td>
+        <td>
+          <select onchange="mudarStatusLead(${l.id}, this.value)" style="width:auto;padding:4px 8px;font-size:12px">
+            ${Object.keys(leadStatusInfo).map(s => `<option value="${s}" ${s === l.status ? 'selected' : ''}>${leadStatusInfo[s].label}</option>`).join('')}
+          </select>
+        </td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-ghost btn-sm" onclick="abrirAbordagem(${l.id})">💬</button>
+          <button class="btn btn-ghost btn-sm" onclick="abrirContrato(${l.id})">📄</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteLead(${l.id})">✕</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>`;
+
+  updateVendasDashboard();
+}
+
+function updateVendasDashboard() {
+  document.getElementById('v-leads').textContent = state.leads.length;
+  document.getElementById('v-propostas').textContent = state.leads.filter(l => l.status === 'proposta' || l.status === 'negociando').length;
+  const fechados = state.leads.filter(l => l.status === 'fechado');
+  document.getElementById('v-fechados').textContent = fechados.length;
+  const receitaContratos = fechados.reduce((sum, l) => sum + (l.valorFechado || 0), 0);
+  document.getElementById('v-receita').textContent = formatBRL(receitaContratos);
+
+  document.getElementById('vendas-status-text').textContent = state.leads.length
+    ? `🟢 ${state.leads.length} cliente(s) no pipeline — ${fechados.length} contrato(s) fechado(s).`
+    : 'Nenhum cliente em prospecção. Adicione seu primeiro lead!';
+}
+
+// ── ABORDAGEM ──
+function abrirAbordagem(id) {
+  leadAtualId = id;
+  gerarAbordagem();
+  openModal('modal-abordagem');
+}
+
+function gerarAbordagem() {
+  const lead = state.leads.find(l => l.id === leadAtualId);
+  if (!lead) return;
+  const canal = document.getElementById('ab-canal').value;
+  const tipo = tipoSiteLabel[lead.tipo] || 'site';
+
+  const textos = {
+    whatsapp: `Olá, ${lead.nome}! 👋\n\nMeu nome é [seu nome] e sou desenvolvedor(a) de sites. Vi que vocês ainda não têm (ou poderiam melhorar) presença online e queria apresentar uma proposta para a criação de um(a) ${tipo.toLowerCase()} profissional para o seu negócio.\n\nUm site bem feito ajuda a atrair mais clientes, passar credibilidade e vender mais — mesmo fora do horário comercial.\n\nPosso te enviar uma proposta rápida com valores e prazos? Tenho horário disponível para começar em breve. 🚀`,
+    email: `Assunto: Proposta de criação de site para ${lead.nome}\n\nOlá, ${lead.nome},\n\nMeu nome é [seu nome], sou desenvolvedor(a) de sites, e gostaria de apresentar uma proposta para a criação de um(a) ${tipo.toLowerCase()} profissional para o seu negócio.\n\nUm site próprio aumenta a credibilidade da marca, facilita o contato com clientes e funciona como uma vitrine 24 horas por dia.\n\nFico à disposição para enviar uma proposta detalhada com escopo, prazo e valores. Podemos conversar essa semana?\n\nAtenciosamente,\n[seu nome]`,
+    instagram: `Oi, ${lead.nome}! Tudo bem? 😊\n\nAdorei o trabalho de vocês por aqui! Trabalho criando ${tipo.toLowerCase()}s para negócios como o de vocês e acho que um site próprio ia ajudar (ainda mais) a atrair e converter clientes.\n\nPosso te mandar uma proposta rápida, sem compromisso?`
+  };
+
+  document.getElementById('ab-texto').value = textos[canal] || textos.whatsapp;
+}
+
+function copiarAbordagem() {
+  const texto = document.getElementById('ab-texto').value;
+  navigator.clipboard.writeText(texto).then(() => {
+    toast('📋 Mensagem copiada!');
+    const lead = state.leads.find(l => l.id === leadAtualId);
+    if (lead && lead.status === 'novo') mudarStatusLead(lead.id, 'contatado');
+  });
+}
+
+// ── CONTRATO ──
+function abrirContrato(id) {
+  leadAtualId = id;
+  const lead = state.leads.find(l => l.id === id);
+  if (!lead) return;
+
+  document.getElementById('ct-doc-cliente').value = '';
+  document.getElementById('ct-valor').value = lead.orcamento || '';
+  document.getElementById('ct-prazo').value = 15;
+  document.getElementById('ct-contratado').value = '';
+  document.getElementById('ct-escopo').value = escopoPadrao[lead.tipo] || '';
+  document.getElementById('ct-preview').value = '';
+
+  openModal('modal-contrato');
+}
+
+function gerarContrato() {
+  const lead = state.leads.find(l => l.id === leadAtualId);
+  if (!lead) return;
+
+  const docCliente = document.getElementById('ct-doc-cliente').value.trim() || '[CPF/CNPJ não informado]';
+  const valor = document.getElementById('ct-valor').value.trim() || 'R$ 0,00';
+  const pagamentoSelect = document.getElementById('ct-pagamento');
+  const pagamento = pagamentoSelect.options[pagamentoSelect.selectedIndex].value;
+  const prazo = document.getElementById('ct-prazo').value || '15';
+  const contratado = document.getElementById('ct-contratado').value.trim() || '[seu nome / razão social]';
+  const escopo = document.getElementById('ct-escopo').value.trim() || escopoPadrao[lead.tipo];
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  const texto = `CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE DESENVOLVIMENTO DE SITE
+
+CONTRATANTE: ${lead.nome}, portador(a) do CPF/CNPJ nº ${docCliente}, doravante denominado(a) CONTRATANTE.
+
+CONTRATADO(A): ${contratado}, doravante denominado(a) CONTRATADO(A).
+
+As partes acima identificadas têm, entre si, justo e acertado o presente Contrato de Prestação de Serviços, que se regerá pelas cláusulas seguintes:
+
+CLÁUSULA 1ª — DO OBJETO
+${escopo}
+
+CLÁUSULA 2ª — DO VALOR E DA FORMA DE PAGAMENTO
+O valor total dos serviços descritos na Cláusula 1ª é de ${valor}. ${pagamento}
+
+CLÁUSULA 3ª — DO PRAZO DE ENTREGA
+O(A) CONTRATADO(A) se compromete a entregar o serviço descrito no objeto deste contrato no prazo de ${prazo} (dias corridos), contados a partir da assinatura deste instrumento e do recebimento de todo o conteúdo (textos, imagens e logotipo) necessário fornecido pelo(a) CONTRATANTE.
+
+CLÁUSULA 4ª — DAS OBRIGAÇÕES DO(A) CONTRATADO(A)
+Prestar o serviço com qualidade técnica, dentro do prazo acordado, mantendo o(a) CONTRATANTE informado(a) sobre o andamento do projeto, e realizar até 2 (duas) rodadas de ajustes/revisões sem custo adicional após a entrega da primeira versão.
+
+CLÁUSULA 5ª — DAS OBRIGAÇÕES DO(A) CONTRATANTE
+Fornecer, em tempo hábil, todo o material necessário (textos, imagens, logotipo e acessos) para a execução do serviço, bem como efetuar os pagamentos nas condições e prazos acordados na Cláusula 2ª.
+
+CLÁUSULA 6ª — DA PROPRIEDADE E DIREITOS
+Após a quitação integral do valor acordado, os direitos de uso do site desenvolvido serão transferidos ao(à) CONTRATANTE. O código-fonte e materiais de terceiros (temas, plugins e bibliotecas de uso comercial) permanecem sujeitos às respectivas licenças de uso.
+
+CLÁUSULA 7ª — DA RESCISÃO
+Este contrato poderá ser rescindido por qualquer das partes, mediante aviso prévio por escrito, sendo devidos os valores proporcionais aos serviços já executados até a data da rescisão.
+
+CLÁUSULA 8ª — DO FORO
+Fica eleito o foro da comarca do(a) CONTRATANTE para dirimir quaisquer dúvidas ou litígios oriundos deste contrato.
+
+E, por estarem assim justas e contratadas, as partes assinam o presente instrumento em 2 (duas) vias de igual teor.
+
+Local e data: _________________________, ${hoje}
+
+
+_______________________________________
+${lead.nome} (CONTRATANTE)
+
+
+_______________________________________
+${contratado} (CONTRATADO/A)`;
+
+  document.getElementById('ct-preview').value = texto;
+}
+
+function copiarContrato() {
+  const texto = document.getElementById('ct-preview').value;
+  if (!texto) return toast('Gere a prévia do contrato primeiro!', true);
+  navigator.clipboard.writeText(texto).then(() => toast('📋 Contrato copiado!'));
+}
+
+function baixarContrato() {
+  const texto = document.getElementById('ct-preview').value;
+  if (!texto) return toast('Gere a prévia do contrato primeiro!', true);
+  const lead = state.leads.find(l => l.id === leadAtualId);
+  const nomeArquivo = 'contrato_' + (lead ? lead.nome : 'cliente').toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.txt';
+  const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nomeArquivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('⬇️ Contrato baixado!');
+}
+
+function fecharContrato() {
+  const lead = state.leads.find(l => l.id === leadAtualId);
+  if (!lead) return;
+  const valorTexto = document.getElementById('ct-valor').value.trim();
+  if (!document.getElementById('ct-preview').value) return toast('Gere a prévia do contrato primeiro!', true);
+
+  lead.status = 'fechado';
+  lead.valorFechado = parseValor(valorTexto);
+  closeModal('modal-contrato');
+  renderLeads();
+  toast('✅ Contrato fechado! Parabéns pela venda 🎉');
+}
+
 // Init
 renderProdutos();
 renderCampanhas();
 renderCanais();
+renderLeads();
 </script>
 </body>
 </html>
