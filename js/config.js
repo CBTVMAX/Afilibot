@@ -217,14 +217,6 @@ window.SITE_CONFIG = {
       mockup: "artist",
     },
     {
-      slug: "rosa-mistika",
-      name: "Rosa Místika Loja",
-      category: "E-commerce",
-      status: "real",
-      shortDescription: "Loja virtual estruturada para apresentação e venda de produtos online.",
-      mockup: "ecommerce",
-    },
-    {
       slug: "jessy-portilla",
       name: "Jessy Portilla",
       category: "Site personalizado · Artista",
@@ -233,23 +225,6 @@ window.SITE_CONFIG = {
       link: "https://jessyportilla.com.br/",
       coverImage: "assets/img/project-jessy-portilla.jpg",
       mockup: "artist2",
-    },
-    {
-      slug: "case-conceito",
-      name: "Vértice Studio",
-      category: "Site institucional · Conceito",
-      status: "conceito",
-      shortDescription: "Projeto conceito criado para demonstrar a estrutura completa de um case da Alpha Prime.",
-      client: "Projeto conceito (demonstrativo)",
-      objective: "Apresentar um estúdio criativo fictício de forma profissional, com foco em credibilidade e captação de novos clientes.",
-      solution: "Desenvolvimento de site institucional com identidade visual própria, seções de serviços, portfólio e formulário de contato direto, priorizando performance e navegação simples.",
-      gallery: [
-        { mockup: "concept-home", label: "Página inicial" },
-        { mockup: "concept-services", label: "Seção de serviços" },
-        { mockup: "concept-mobile", label: "Versão mobile" },
-      ],
-      tech: ["HTML5", "CSS3", "JavaScript"],
-      mockup: "concept-home",
     },
   ],
 
