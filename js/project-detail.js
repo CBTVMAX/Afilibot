@@ -29,6 +29,16 @@
     return `<div class="mockup-cover mockup-${kind}"><div class="mc-frame"><div class="mc-bar"><i></i><i></i><i></i></div><div class="mc-body"><div class="mc-line" style="width:55%"></div><div class="mc-line" style="width:35%"></div><div class="mc-block"></div></div></div></div>`;
   }
 
+  function resolveImg(src) {
+    if (!src) return src;
+    return /^https?:\/\//.test(src) ? src : `../${src}`;
+  }
+
+  function coverMarkup(p) {
+    if (p.coverImage) return `<img src="${resolveImg(p.coverImage)}" alt="${p.name}" loading="lazy">`;
+    return mockupMarkup(p.mockup);
+  }
+
   const badge =
     project.status === "conceito"
       ? '<span class="badge badge-concept">Projeto conceito</span>'
@@ -98,7 +108,7 @@
         </div>
         <h1 class="project-title reveal">${project.name}</h1>
         <p class="project-lead reveal">${project.shortDescription}</p>
-        <div class="project-cover reveal">${mockupMarkup(project.mockup)}</div>
+        <div class="project-cover reveal${project.coverImage ? " has-photo" : ""}">${coverMarkup(project)}</div>
       </div>
     </section>
 
@@ -144,7 +154,7 @@
             : '<span class="badge badge-real">Case real</span>';
         return `
         <a href="${p.slug}.html" class="portfolio-card reveal">
-          <div class="portfolio-cover">${b}${mockupMarkup(p.mockup)}</div>
+          <div class="portfolio-cover">${b}${coverMarkup(p)}</div>
           <div class="portfolio-body">
             <span class="portfolio-category">${p.category}</span>
             <h3>${p.name}</h3>

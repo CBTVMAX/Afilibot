@@ -167,6 +167,11 @@
     return `<div class="mockup-cover mockup-${kind}"><div class="mc-frame"><div class="mc-bar"><i></i><i></i><i></i></div><div class="mc-body"><div class="mc-line" style="width:55%"></div><div class="mc-line" style="width:35%"></div><div class="mc-block"></div></div></div></div>`;
   }
 
+  function coverMarkup(p) {
+    if (p.coverImage) return `<img src="${p.coverImage}" alt="${p.name}" loading="lazy">`;
+    return mockupMarkup(p.mockup);
+  }
+
   function renderPortfolio() {
     const el = document.getElementById("portfolio-grid");
     if (!el) return;
@@ -180,7 +185,7 @@
         <a href="projetos/${p.slug}.html" class="portfolio-card reveal">
           <div class="portfolio-cover">
             ${badge}
-            ${mockupMarkup(p.mockup)}
+            ${coverMarkup(p)}
           </div>
           <div class="portfolio-body">
             <span class="portfolio-category">${p.category}</span>
