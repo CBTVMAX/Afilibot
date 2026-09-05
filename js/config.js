@@ -50,11 +50,11 @@ window.SITE_CONFIG = {
     ctaSecondary: { label: "Ver projetos", href: "#projetos" },
   },
 
-  // Indicadores — números editáveis. Substitua pelos números reais assim que disponíveis.
+  // Indicadores — números reais informados pelo cliente.
   stats: [
-    { value: 15, suffix: "+", label: "Sites desenvolvidos" },
-    { value: 30, suffix: "+", label: "Projetos criativos" },
-    { value: 6, suffix: "+", label: "Áreas atendidas" },
+    { value: 2, suffix: "", label: "Sites desenvolvidos" },
+    { value: 300, suffix: "+", label: "Artes e projetos de design" },
+    { value: 2, suffix: "+", label: "Áreas atendidas" },
   ],
 
   services: [
