@@ -23,8 +23,8 @@ window.SITE_CONFIG = {
     whatsappDisplay: "(79) 98816-9779",
     // E-mail real de contato
     email: "alphaprime.digitaloficial@gmail.com",
-    // EDITAR: usuário do Instagram (sem @)
-    instagram: "alphaprime.digital",
+    // Usuário real do Instagram (sem @)
+    instagram: "alphaprimesolucoesdigitais",
     // EDITAR: cidade/região de atuação, se quiser exibir
     location: "Atendimento em todo o Brasil · 100% remoto",
     logo: "assets/img/logo-icon.png",
