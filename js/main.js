@@ -248,7 +248,7 @@
         <ul class="price-features">
           ${p.features.map((f) => `<li>${ICONS.check}${f}</li>`).join("")}
         </ul>
-        <a href="#contato" class="btn btn-secondary btn-block" data-wa-message="Olá! Gostaria de solicitar um orçamento para o plano ${p.name}.">Solicitar orçamento</a>
+        <a href="#" class="btn btn-secondary btn-block" data-wa-link data-wa-message="Olá! Quero fechar o plano ${p.name} (${p.priceLabel.toLowerCase()} R$ ${currency(p.price)},00).">Fechar plano</a>
       </div>`
       )
       .join("");

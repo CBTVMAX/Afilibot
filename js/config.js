@@ -212,6 +212,7 @@ window.SITE_CONFIG = {
       category: "Site profissional · Artista",
       status: "real",
       shortDescription: "Site profissional desenvolvido para apresentação e fortalecimento de marca artística.",
+      link: "https://jessicagonzales.com.br/",
       mockup: "artist",
     },
     {
@@ -228,6 +229,7 @@ window.SITE_CONFIG = {
       category: "Site personalizado · Artista",
       status: "real",
       shortDescription: "Site personalizado desenvolvido para apresentação profissional de carreira artística.",
+      link: "https://jessyportilla.com.br/",
       mockup: "artist2",
     },
     {
