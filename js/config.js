@@ -18,11 +18,11 @@ window.SITE_CONFIG = {
     shortName: "Alpha Prime",
     tagline: "Ideias que geram resultados",
     foundingYear: 2026,
-    // EDITAR: número real com DDI+DDD, apenas dígitos (usado em todos os links de WhatsApp)
-    whatsapp: "5511999999999",
-    whatsappDisplay: "(11) 99999-9999",
-    // EDITAR: e-mail real de contato
-    email: "contato@alphaprimedigital.com.br",
+    // Número real com DDI+DDD, apenas dígitos (usado em todos os links de WhatsApp)
+    whatsapp: "5579988169779",
+    whatsappDisplay: "(79) 98816-9779",
+    // E-mail real de contato
+    email: "alphaprime.digitaloficial@gmail.com",
     // EDITAR: usuário do Instagram (sem @)
     instagram: "alphaprime.digital",
     // EDITAR: cidade/região de atuação, se quiser exibir
